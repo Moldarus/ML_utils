@@ -10,9 +10,7 @@ import numpy as np
 
 def example_1_eda_and_visualization():
     """Пример 1: EDA и визуализация"""
-    print("\n" + "🔍" * 30)
     print("EXAMPLE 1: EDA AND VISUALIZATION")
-    print("🔍" * 30)
 
     # Генерируем данные
     df = generate_sample_data('mixed', n_samples=500)
@@ -28,9 +26,7 @@ def example_1_eda_and_visualization():
 
 def example_2_data_preprocessing():
     """Пример 2: Предобработка данных"""
-    print("\n" + "⚙️" * 30)
     print("EXAMPLE 2: DATA PREPROCESSING")
-    print("⚙️" * 30)
 
     # Данные с пропусками
     df = pd.DataFrame({
@@ -61,9 +57,7 @@ def example_2_data_preprocessing():
 
 def example_3_clustering():
     """Пример 3: Кластеризация"""
-    print("\n" + "📊" * 30)
     print("EXAMPLE 3: CLUSTERING")
-    print("📊" * 30)
 
     # Генерируем данные для кластеризации
     df = generate_sample_data('clustering', n_samples=300)
@@ -91,9 +85,7 @@ def example_3_clustering():
 
 def example_4_classification():
     """Пример 4: Классификация"""
-    print("\n" + "🎯" * 30)
     print("EXAMPLE 4: CLASSIFICATION")
-    print("🎯" * 30)
 
     # Генерируем данные
     df = generate_sample_data('classification', n_samples=500)
@@ -133,9 +125,7 @@ def example_4_classification():
 
 def example_5_regression():
     """Пример 5: Регрессия"""
-    print("\n" + "📈" * 30)
     print("EXAMPLE 5: REGRESSION")
-    print("📈" * 30)
 
     # Генерируем данные
     df = generate_sample_data('regression', n_samples=500)
@@ -171,9 +161,7 @@ def example_5_regression():
 
 def example_6_anomaly_detection():
     """Пример 6: Обнаружение аномалий"""
-    print("\n" + "⚠️" * 30)
     print("EXAMPLE 6: ANOMALY DETECTION")
-    print("⚠️" * 30)
 
     # Генерируем данные с аномалиями
     np.random.seed(42)
@@ -214,9 +202,7 @@ def example_6_anomaly_detection():
 
 def example_7_full_pipeline():
     """Пример 7: Полный пайплайн"""
-    print("\n" + "🚀" * 30)
     print("EXAMPLE 7: FULL ML PIPELINE")
-    print("🚀" * 30)
 
     # Создаем данные
     df = generate_sample_data('classification', n_samples=500)
@@ -229,9 +215,7 @@ def example_7_full_pipeline():
 
 def example_8_quick_checks():
     """Пример 8: Быстрые проверки для экзамена"""
-    print("\n" + "✅" * 30)
     print("EXAMPLE 8: QUICK CHECKS FOR EXAM")
-    print("✅" * 30)
 
     # 1. Быстрая проверка данных
     df = pd.DataFrame({
@@ -263,9 +247,7 @@ def example_8_quick_checks():
 
 
 if __name__ == "__main__":
-    print("=" * 60)
     print("📚 EXAM PREPARATION EXAMPLES")
-    print("=" * 60)
 
     # Запускаем все примеры
     examples = [
@@ -289,10 +271,7 @@ if __name__ == "__main__":
         except Exception as e:
             print(f"Error in {name}: {e}")
             continue
-
-    print("\n" + "🎉" * 30)
     print("ALL EXAMPLES COMPLETED SUCCESSFULLY!")
-    print("🎉" * 30)
     print("\nRemember:")
     print("1. You can use these utilities during exam")
     print("2. Prepare your own custom modules")
