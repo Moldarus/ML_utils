@@ -868,23 +868,17 @@ if __name__ == "__main__":
     """
     Запустите этот файл для демонстрации всех возможностей
     """
-    print("=" * 60)
     print("UTILS DEMONSTRATION")
-    print("=" * 60)
 
     # Пример 1: Генерация и анализ данных
-    print("\n" + "=" * 60)
     print("EXAMPLE 1: EDA on regression dataset")
-    print("=" * 60)
 
     df_reg = generate_sample_data('regression', n_samples=500)
     quick_eda(df_reg, target_col='target')
     quick_visualization_report(df_reg, target_col='target')
 
     # Пример 2: Кластеризация
-    print("\n" + "=" * 60)
     print("EXAMPLE 2: Clustering")
-    print("=" * 60)
 
     df_clust = generate_sample_data('clustering', n_samples=300)
     X_clust = df_clust[['x', 'y', 'z']].values
@@ -899,13 +893,9 @@ if __name__ == "__main__":
     plot_clusters_2d(X_clust, kmeans_labels, "K-Means Clustering", x_col=0, y_col=1)
 
     # Пример 3: Полный ML пайплайн
-    print("\n" + "=" * 60)
     print("EXAMPLE 3: Full ML Pipeline")
-    print("=" * 60)
 
     df_ml = generate_sample_data('classification', n_samples=300)
     model, results, X_test, y_test = create_ml_pipeline(df_ml, 'target')
 
-    print("\n" + "=" * 60)
     print("DEMONSTRATION COMPLETE!")
-    print("=" * 60)
