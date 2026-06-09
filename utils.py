@@ -531,8 +531,6 @@ def quick_visualization_report(df, target_col=None):
         plt.show()
 
 
-# Добавьте в utils.py после anomaly detection (примерно строка 500+)
-
 # ==================== 7.5. Feature Engineering ====================
 
 def create_interaction_features(df, feature_pairs=None, max_features=10):
