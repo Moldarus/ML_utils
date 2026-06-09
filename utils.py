@@ -531,6 +531,136 @@ def quick_visualization_report(df, target_col=None):
         plt.show()
 
 
+# Добавьте в utils.py после anomaly detection (примерно строка 500+)
+
+# ==================== 7.5. Feature Engineering ====================
+
+def create_interaction_features(df, feature_pairs=None, max_features=10):
+    """
+    Создание interaction features (произведения признаков)
+    Пример:
+        df_new = create_interaction_features(df, [('age', 'income'), ('height', 'weight')])
+    """
+    df_new = df.copy()
+    
+    if feature_pairs is None:
+        # Автоматический выбор самых коррелирующих с целевой
+        numeric_cols = df.select_dtypes(include=[np.number]).columns.tolist()
+        if len(numeric_cols) > 1:
+            corr_matrix = df[numeric_cols].corr().abs()
+            # Берём верхний треугольник
+            pairs = []
+            for i in range(len(numeric_cols)):
+                for j in range(i+1, len(numeric_cols)):
+                    if corr_matrix.iloc[i, j] > 0.5:
+                        pairs.append((numeric_cols[i], numeric_cols[j]))
+            feature_pairs = pairs[:max_features]
+    
+    for col1, col2 in feature_pairs:
+        if col1 in df.columns and col2 in df.columns:
+            new_col_name = f"{col1}_x_{col2}"
+            df_new[new_col_name] = df[col1] * df[col2]
+            print(f"Created interaction feature: {new_col_name}")
+    
+    return df_new
+
+
+def create_polynomial_features(df, degree=2, max_features=10):
+    """
+    Создание полиномиальных признаков
+    Пример:
+        df_new = create_polynomial_features(df, degree=2)
+    """
+    from sklearn.preprocessing import PolynomialFeatures
+    
+    numeric_cols = df.select_dtypes(include=[np.number]).columns.tolist()
+    
+    poly = PolynomialFeatures(degree=degree, include_bias=False, interaction_only=False)
+    poly_features = poly.fit_transform(df[numeric_cols])
+    
+    # Создаём имена новых признаков
+    poly_names = poly.get_feature_names_out(numeric_cols)
+    
+    df_new = df.copy()
+    for i, name in enumerate(poly_names):
+        if name not in numeric_cols:  # Только новые (не оригинальные)
+            df_new[name] = poly_features[:, i]
+    
+    print(f"Created {len(poly_names) - len(numeric_cols)} polynomial features")
+    return df_new
+
+
+# ==================== 7.6. Feature Selection ====================
+
+def select_features_by_variance(df, threshold=0.01):
+    """
+    Удаление признаков с низкой дисперсией
+    Пример:
+        df_selected = select_features_by_variance(df, threshold=0.01)
+    """
+    from sklearn.feature_selection import VarianceThreshold
+    
+    numeric_cols = df.select_dtypes(include=[np.number]).columns.tolist()
+    
+    selector = VarianceThreshold(threshold=threshold)
+    selected = selector.fit_transform(df[numeric_cols])
+    
+    selected_cols = [numeric_cols[i] for i, keep in enumerate(selector.get_support()) if keep]
+    removed_cols = [col for col in numeric_cols if col not in selected_cols]
+    
+    print(f"Removed {len(removed_cols)} low-variance features: {removed_cols}")
+    return df[selected_cols + [col for col in df.columns if col not in numeric_cols]]
+
+
+def select_features_by_correlation(df, target_col, threshold=0.95):
+    """
+    Удаление сильно коррелирующих признаков
+    Пример:
+        df_selected = select_features_by_correlation(df, 'target', threshold=0.95)
+    """
+    if target_col not in df.columns:
+        print("Target column not found")
+        return df
+    
+    numeric_cols = df.select_dtypes(include=[np.number]).columns.tolist()
+    if target_col in numeric_cols:
+        numeric_cols.remove(target_col)
+    
+    corr_matrix = df[numeric_cols].corr().abs()
+    upper = corr_matrix.where(np.triu(np.ones(corr_matrix.shape), k=1).astype(bool))
+    
+    to_drop = [column for column in upper.columns if any(upper[column] > threshold)]
+    
+    df_selected = df.drop(columns=to_drop)
+    print(f"Removed {len(to_drop)} highly correlated features: {to_drop}")
+    
+    return df_selected
+
+
+# ==================== 7.7. Cross-validation wrapper ====================
+
+def cross_validate_model(model, X, y, cv=5, scoring='auto'):
+    """
+    Кросс-валидация модели с выводом метрик
+    Пример:
+        scores = cross_validate_model(rf_model, X, y, cv=5)
+    """
+    if scoring == 'auto':
+        if len(np.unique(y)) == 2:
+            scoring = 'roc_auc'
+        elif len(np.unique(y)) > 2 and len(np.unique(y)) <= 20:
+            scoring = 'f1_weighted'
+        else:
+            scoring = 'r2'
+    
+    scores = cross_val_score(model, X, y, cv=cv, scoring=scoring)
+    
+    print(f"Cross-validation ({scoring}):")
+    print(f"  Mean: {scores.mean():.4f} (+/- {scores.std() * 2:.4f})")
+    print(f"  Individual folds: {scores}")
+    
+    return scores
+    
 # ==================== 8. Генерация примеров данных ====================
 
 def generate_sample_data(dataset_type='regression', n_samples=1000, random_state=42):
